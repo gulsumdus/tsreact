@@ -1,0 +1,70 @@
+//1)******************************** type belirtme*******************************************************
+
+let name: string = "Ahmet";
+let age: number = 3
+let done: boolean= true
+let trial: number | string =" sayı ya da string gelebilir"
+//2)*****************************object type belirtme*****************************************************
+ let obj = {
+  name: "Ahmet",
+  age :26,
+  done: true
+ } // bunun gibi bir sürü objem olursa genel olarak objeler için şu yöntem kullanılır:
+
+ type Obj = {
+  name:string,
+  age: number,
+  done: boolean,
+  color?: number //eğer ben bu özeliğin gelmesini zorunlu olsun istemiyorum 
+  // yani ya gelelbilir ya gelmez bunun için ? işareti koyulur
+ }  // ve daha sonra
+
+ let obje: Obj = {
+  name: "Ahmet",
+  age :26,
+  done: true
+  //color: 5
+ } 
+// 3)****************************interface & extends ****************************************************
+// örneğin benim 3 özellikli bir objem var:
+
+type obje1 = {
+   ad:string,
+   soyad: string,
+   num: number
+}
+// ve ben ayriyetten yine bu 3 özelliğin yanına bir özellik daha ekleyip başka bir obje oluşturmak istiyorum:
+
+type obje2 = {
+  ad:string,
+  soyad: string,
+  num: number,
+  address: string
+}
+// bu şekilde uzun uzadıya yazmak yerine interface ve extends kullanarak obje2'yi tekrar oluşturabiliriz:
+
+interface objec1 {                    
+  ad:string,
+  soyad: string,
+  num: number
+}
+
+interface objec2 extends objec1 { // aslında burada 4 tane özellik vardır!!!
+  address: string
+}
+
+4)*************************useState type belirleme****************************
+
+string:
+
+ const [todo, setTodo] = useState<string>('')
+
+number: 
+
+ const [todo, setTodo] = useState<string>()
+
+ARRAY:
+-string:
+ const [todo, setTodo] = useState<string[]>([])
+ -number:
+  const [todo, setTodo] = useState<number[]>([])
