@@ -1,0 +1,111 @@
+Özellik	                                       useRef	              useState
+_____________________________________________________________________________________
+Render tetikler mi?	                           ❌ Hayır	             ✅ Evet
+Değer saklar mı?	                           ✅ Evet	             ✅ Evet
+DOM elemanlarına erişebilir mi?	               ✅ Evet	             ❌ Hayır
+Performans optimizasyonu sağlar mı?	           ✅ Evet	             ❌ Hayır
+
+********************************************useRef********************************************************
+- useRef, React'ın bir değişkeni saklamak için kullandığı bir hooktur. Ancak useState gibi render tetiklemez.
+
+=> useRef Ne için kullanılır:
+  - DOM elemanlarına erişmek için(document.getElementById(),document.getElementsByClassName(), vb...)
+  -  Render tetiklemeden değişken saklamak  için (örn, önceki değerleri saklamak)
+  - Performans optimizasyonu (örneğin bileşenin kaç kez render edildiğini takip etmek)
+
+______________________________________________________________________________________________________________
+1) useRef ile DOM elemanına Erişme:
+
+Ex:
+ import React, {useRef, useEffect} from "react";
+
+ const FocusInput: react.FC = () => {
+    const inputRef= useRef<HTMLInputElement | null>(null);
+
+    useEffect(()=> {
+         inputRef.current?.focus(); //Sayfa yüklendiğinde input'a otomatik odaklanır
+    },[]);
+
+    return < input ref= {inputRef} type="text" placeholder="Odaklanılan input" />;
+ };
+ export default FocusInput;
+ *****************************
+ - Burada useRef, <input> elemanına doğrudan eirşim sağlar
+ - inputRef.current?.focus(); ile sayfa açıldığında input'a otomatik odaklanılır.
+ ______________________________________________________________________________________________________________
+ 2)useRef ile render Tetiklenmeden Değişken saklamak
+
+ Ex:
+ import React, {useState, useRef} from "react";
+
+ const Counter: React.FC = () => {
+    const [count, setCount] = useState<number>(0);
+    const prevCount = useRef<number>(0); //Önceki değeri saklamak için useRef kullanılır
+
+    const increment = () => {
+        prevCount.current = count; //önceki değeri saklıyoruz
+        setCount(count+1);
+    };
+    return (
+        <div>
+        <p> Şu anki sayı: {count} </p>
+        <p> Önceki Sayı: {prevCount.current} </p>
+        <button onClick={increment}> Artır</button>
+        </div>
+    );
+ };
+
+ export default Counter;
+ ____________________________________________________________________________________________________________________
+ 3) useRef ile Render Sayısını Takip etmek
+
+ import React, {useState, useRef, useEffect} from "react";
+
+ const RenderCounter: React.FC = () => {
+    const [count, setcount] = useState<number>(0);
+    const renderCount = useRef<number>(0);
+
+    useEffect(()=> {
+        renderCount.current +=1; //her render'da sayıyı arttırır
+    });
+
+    return (
+        <div>
+               <p> Sayac: {Count} </p>
+               <p> Bu bileşen {renderCount.current} kez render edildi </p>
+               <button onClick={()=> setCount(count+1)}>Sayacı Artır </button>
+        </div>
+    );
+ };
+ export default RenderCounter;
+ *****************************************************
+ - RenderCount.current: kaç kez render olduğunu saklıyor.
+ - useState kullanılmadığı için render tetiklenmeden değer güncelleniyor.
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

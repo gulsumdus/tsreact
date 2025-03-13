@@ -1,0 +1,22 @@
+=> String State:
+  
+   const [ad,setAd] = useState<string> ("Ahmet");
+
+=> Boolean State:
+
+   const [acik, setAcik] = useState<boolean> (false);
+
+=> Array State:
+ 
+  const[liste,setListe] = useState<string[]>(["Elma","Armut"]);
+
+=> Object State:
+ 
+   const [kullanici, setKullanici] = useState <{isim:string; yas:number}>({
+      isim:"Mehmet",
+      yas:25
+   });
+
+Özet olarak:
+
+*******useState<T>(başlangıçDeğeri) ile state'in alabileceği tipi belirleyebiliriz.******

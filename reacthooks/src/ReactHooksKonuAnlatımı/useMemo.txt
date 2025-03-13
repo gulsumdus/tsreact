@@ -1,0 +1,93 @@
+**************************useMemo****************************
+  - useMemo, hesaplanan bir değeri (değişkeni) saklayarak gereksiz hesaplamaları ömleyen bir hooktur.
+
+     useMemo Kullanım Alanları:
+     - Ağır hesaplamaların gereksiz tekrarını önlemek
+     - Bir değişkenin bellekte (cache) saklanmasını sağlamak 
+     - Performansı artırmak, özellikle büyük veri işlemlerinde
+     - Her render'da yeniden hesaplamak yerine, yalnızca bağımlılıklar değiştiğinde hesaplama yapar.
+
+     ÖRNEK:
+     1) useMemo olmadan bir uygulama:
+      - aşağıdaki gibi ağır hesaplama her render'da tekrar çalışır:
+
+      import React, {useState} from "react";
+       
+       const ExpensiveCalculation = (num:number)=> {
+        console.log("Ağır işlem çalıştı...");
+        for (let i=0; i > 1000000000000000; i++)
+        return num * 2;
+       };
+
+       const App: React.FC = () => {
+          const [count, setCount] = useState<number>(0);
+          const [inputValue, setInputValue] = useState<number>(0);
+
+          const result = ExpensiveCalculation(inputValue);
+
+          return (
+            <div>
+                 <h2> Sonuç : {result}</h2>
+                 <input
+                 type= "number"
+                 value= {inputValue}
+                 onChange= {(e) => setInputValue(Number(e.target.value))}/>
+
+                 <button onClick= { () => setCount(count + 1)}> Sayacı Artır ({count})</button>
+            </div>
+          );
+       };
+
+export default App;
+*****************
+PROBLEM:
+    -  Sayacı arttırınca (count) bile ağır hesaplama tekrar çalışır!!!
+    - ExpensiveCalculation(inputValue) yalnızca inputValue değiştiğinde çalışmalıdır.
+______________________________________________________________________________________________________________
+--------------------useMemo ile optimizasyon-----------------------
+
+import React, {useState, useMemo} from "react";
+
+const ExpensiveCalclation = (num: number) => {
+    console.log("Ağır işlem çalıştı...");
+    for (let i = 0; i < 10000000000000; i++){}
+    return num*2;
+};
+
+const App: React.FC = () =>{
+    const [count, setCount] = useState<number>(0);
+    const [inputValue, setInputValue] =useState<number>(0);
+};
+
+const result= useMemo(()=>ExpensiveCalclation(inputValue),[inputValue]);
+
+return (
+    <div>
+    <h2>Sonuc: {result} </h2>
+    <input
+    type="number"
+    value= {inputValue}
+    onChange= {(e) => setInputValue(Number(e.target.value))}/>
+    <button onClick= {() => setCount(count + 1)}> Sayacı Artır ({count}) </button>
+    </div>
+  );
+};
+
+export default App;
+
+
+___________________________GENEL KULLANIMI____________________________
+
+const cachedValue = useMemo(() => hesaplamaFonksiyonu(), [dependency1, dependency2]);
+
+
+-----------------------------------MEMO vs Callback--------------------------------------------------------
+useMemo:
+- Hesaplanmış bir değeri saklar (const value = useMemo(...)).
+- Ağır işlemleri optimize etmek için kullanılır.
+- Bellekte bir değişken saklar.
+
+useCallback:
+- Fonksiyonun referansını saklar (const func = useCallback(...)).
+- React.memo ile birlikte, gereksiz render'ları engellemek için kullanılır.
+- Bellekte bir fonksiyon saklar.

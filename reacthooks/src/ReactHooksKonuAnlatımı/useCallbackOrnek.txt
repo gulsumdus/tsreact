@@ -1,0 +1,62 @@
+**************************useCallback ile Child Componenti Optimize Etme*************************
+1) Usecallback kullanılmadan önce:
+ - Aşağıda ChildComponent, kendisine gelen handleClick fonksiyonunun referansı değişitği için 
+ gereksiz yere tekrar olur:
+_______________________________________________________________________________________________________
+import React, {useState} from "react";
+
+interface ChildProps {
+     handleClick: () => void;
+}
+
+const ChildComponent:React.FC <ChildProps> = ({handleClick}) => {
+    console.log("ChildComponent render edildi");
+    return <button onClick={handleClick}> Artır </button>;
+};
+
+const Parent: React.FC = () => {
+ const [count, setCount]= useState<number>(0);
+
+ const handleClick = () => {
+  setCount(count+1);
+ };
+
+ return(
+    <div>
+     <p> Sayac: {count} </p>
+     <ChildComponent handleClick={handleClick} />
+    </div>
+ );
+};
+export default Parent;
+*******************************
+ - Her count değiştiğinde handleClick fonksiyonu yeniden oluştuğu için ChildComponent tekrar render edilir.
+____________________________________________________________________________________________________________
+2) useCallback ile Çözüm:
+
+import React, {useState, useCallback} from "react";
+
+interface ChildProps {
+    handleClick: () => void;
+}
+
+const ChildComponent:React.FC <ChildProps> = React.memo(({handleClick}) => { /////REACT.MEMO' da kullanıldı!!!
+    console.log("Child component render edildi");
+    return <button onClick={handleClick}>Artır</button>;
+});
+
+const Parent: React.FC = () => {
+  const [count, setCount] = usestate<number>(0);
+
+  const handleClick = useCallback(() =>{
+     setCount((prev) => prev+ 1);
+  }, []);
+
+  return(
+    <div> 
+         <p>Sayac: {count} </p>
+         <ChildComponent handleClick= {handleClick} />
+    </div>
+  );
+};
+export default Parent;

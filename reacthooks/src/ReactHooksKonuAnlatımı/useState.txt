@@ -1,0 +1,23 @@
+
+*******************useState*******************
+
+- bir component içinde state yönetmek için kullanılır.
+- State değiştiğinde, component ototmatik olarak yeniden render edilir.
+- useState'in dönüş değeri bir dizi olup, ilk eleman state değişkeni ikinci eleman ise onu değiştiren fonksiyondur.
+
+örn:
+
+> import React,{useState} from 'react';
+>
+>const Sayac: React.FC = () =>{       //react'da componentinde türünü belirtmek gerekiyor.FC:fonksiyon componenti demek.
+> const [count,setCount]= useState<number>(0);
+>
+>return (
+> <div>
+> <p>Sayac : {count}</p>
+> <button onClick= {()=> setCount(count+1)}> Artır </button>
+></div>
+> );
+>};
+>
+>export default Sayac;

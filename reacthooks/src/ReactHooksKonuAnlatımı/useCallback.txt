@@ -1,0 +1,49 @@
+**************************useCallback**********************************
+useCallback: hafızada bir fonksiyonun referansını saklayarak gereksiz renderları önleyen bir hooktur.
+   - Her render'da fonksiyonun yeniden oluşturulmasını engeller.
+   - Performasyon optimizasyonu sağlar, özelliklr child bilşenlere prop olarak fonksiyon gönderirken kullanılır.
+   - Memoization (önbellekleme) yaparak gereksiz hesaplamaları önler.
+-----------------------------------------------------------------------------
+Örnek:
+
+import React, { useState, useCallback } from "react";
+
+const Sayac: React.FC = () => {
+  const [count, setCount] = useState<number>(0);
+
+  const handleClick = useCallback(()=> {setCount((prev)=> prev+1)},[]) ///
+   
+ //   !!! useCallback ile fonksiyonun referansı korunur, yeniden oluşturulmaz
+
+
+  return (
+    <div>
+      <p>Sayac: {count}</p>
+      <button onClick={handleClick}>Artır</button>
+    </div>
+  );
+};
+
+export default Sayac;
+
+___________________________________________________
+//useCallback olmadan:
+
+  //bu şekilde Fonksiyon her render'da tekrar oluşturuluyor:
+
+  const handleClick = () => {
+    setCount(count + 1);
+  };
+
+  //Eğer bu fonk bir child componente prop olarak gönderilirse, bu fonk child componentte gereksiz yere yeniden render edilir!!!
+
+-------------------Bağımlılıklar (Dependency Array) Nasıl Çalışır?-------------------------------
+
+1) useCallback(()=>{...},[]) :Fonsiyon sadece bir kere oluşturulur (mount edilirken)
+2) useCallback(()=>{...},[state]):state değiştikçe fonksiyon yeniden oluşturulur.
+3) useCallback (() => {...}): Her render'da yeniden oluşturulur (performans açısından kötü!!!!)
+
+        örn:
+        const handleClick = useCallback(() => {
+        setCount((prev) => prev + 1);
+        }, [count]); // count değiştiğinde fonksiyon yeniden oluşturulur.

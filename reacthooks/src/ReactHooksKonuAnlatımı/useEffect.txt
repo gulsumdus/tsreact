@@ -1,0 +1,103 @@
+*****************useEffect*******************
+-> React componentleri render edildildiğinde veya state değiştiğinde bazı işlemleleri yapabiliriz.
+-> componentlerin yaşam döngüsünü yönetir (componentDidMount,componentDidUpdate,componentWillUnmount).
+-> Dependencies ile ne zaman çalışacağını belirleriz.
+-> Cleanup fonksiyonu, gereksiz işlemleri temizleyerek performansı arttırır.
+-> API çağrıları, event listener'lar, DOM güncellemeleri gibi işlemler için idealdir.
+
+   * useEffect, react bileşenlerinde side effects yönetmek için kullanılıan bir hooktur.
+     
+     Yan etkiler şunlar olabilir:
+     - API çagrıları (fetch,axios)
+     - DOM manipulasyonu
+     - Timer veya interval ayarlama
+     - Event listener ekleme/çıkarma
+
+ÖRNEKLER:
+
+- TEMEL KULLANIMI------------------------------------------------------------------------------------------------------------------
+
+>import React, {useState, useEffect} from "react";
+>
+> const Sayac: React.FC =()=> {
+>   const [count, setCount] = useState<number>(0);
+>
+>                                                                   //useEffect içinde bir işlem yapıyoruz
+>useEffect(()=>{console.log("Sayac güncellendi: ${count}");}
+ ,[count]);                                                        //count değiştikçe çalışır!!
+>
+> return (
+> <div>
+>      <p>Sayac: {count}</p>
+>      <button onClick={() => setCount(count + 1)}>Artır</button>
+> </div>
+> );
+>};
+>
+>export default Sayac;
+
+- Bağımlılıklara (Dependency Array) Göre Çalışma Mantığı--------------------------------------------------------------------------
+
+1) useEffect(()=> {...},[]) : sadece bir kez çalışır (component mount oluduğunda)
+
+   >
+   >useEffect(()=>{
+   >console.log("Component ekrana geldi.");
+   > }, []);                               //Boş dizi olduğunda sadece bir kere çalışır!!!
+---------------------------------------------------------------------------------------------------------------
+2) useEffect (()=> {...}, [state]): Belirtilen state değişinde çalışır !!!
+  >
+   >useEffect(()=>{
+   >console.log("Sayac değeri değişti : ${count}");
+   > }, [count]);                               //count değiştikçe tetiklenir!!!
+---------------------------------------------------------------------------------------------------------------
+3)useEffect (()=> {...}):  : Her render sonrası çalışır
+   
+  >useEffect(()=>{
+  >console.log("Her render sonrası çalışır");
+  > }
+  >);
+---------------------------------------------------------------------------------------------------------------
+4) Cleanup Function: return()=> {...}
+* Component kaldırılığında (unmount olduğunda) çalışır.
+* Event listenir veya interval gibi işlemleri temizlemek için kullanılır.
+  >
+  >useEffect(()=>{console.log("Component eklendi");
+    return()=>{
+      console.log("Component kaldırıldı");
+      };
+    })
+  >
+----------------------------------------------------------------------------------------------------------------
+________________________Örnek: API'den Veri Çekme___________________________
+import React, {useState, useeffect} from "react";
+
+interface Kullanici {
+  id: number;
+  name: string;
+}
+ const KullaniciListesi: React.FC = ()=> {
+  
+  const [kullanicilar, setKullanicilar] = useState <Kullanici[]>([]);
+   
+
+      useEffect(()=>{
+        fetch("https://jsonplaceholder.typicode.com/users")
+        .then((res)=>res.json())                           //gelen string veriyi json formata çevirdik
+        .then((data) => setKullanicilar(data));            //json formatındaki datayı kullanicilar array'ine atanır
+      }, [])                                               //sadece component yüklendiğinde çalışır
+
+      return(
+        <div>
+             <h2> Kullanici listesi</h2>
+             <ul>
+                  {kullanicilar.map((user)=>(
+                    <li key={user.id}>{user.name}</li>
+                  ))}
+             </ul>
+        </div>
+
+      );
+ };
+ export default KullaniciListesi;
+-------------------------------------------------------------------------------------------------------------
