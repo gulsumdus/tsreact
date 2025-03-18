@@ -1,33 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect, useCallback, useMemo, useRef} from 'react'
 
+interface User {
+  id: number,
+  username: string
+}
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState<number>(0) //usage useState (1)
+  const [users, setUsers] = useState<User[] | null>(null)
 
+  useEffect(() => { //usage useEffect (2)
+    console.log("mounting")
+    console.log("Users:", users)
+
+    return () => console.log("unmounting")
+  }, [users])//her users değiştiğinde render edilir
+
+  const addTwo = useCallback((): void => setCount(prev => prev + 1), [])//usage of useCallback (3)
+  //_________________________________________________________________________________________
+  type fibFunc = (num: number) => number
+
+  const fib: fibFunc = (num: number) => {
+    if (num < 2) return num
+    return fib(num - 1) + fib(num - 2)
+  }
+  const myNum: number = 10
+
+  const result = useMemo<number>(() => fib(myNum), [myNum])//usage of useMemo (4)
+//__________________________________________________________________________________________
+const inputRef = useRef<HTMLInputElement>(null) //usage of useRef (5)
+console.log(inputRef?.current)
+console.log(inputRef?.current?.value)
+
+//_________________________________________________________________________________________
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>{count}</h1>
+      <button onClick={addTwo}>Add</button>
+      <h2>{result}</h2>
+      <input ref={inputRef} type= "text"></input>
     </>
   )
 }
